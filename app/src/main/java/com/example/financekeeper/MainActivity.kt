@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.financekeeper.navigation.NavigationRoot
 import com.example.financekeeper.ui.theme.FinanceKeeperTheme
 import org.koin.androidx.compose.koinViewModel
 
@@ -24,24 +25,28 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FinanceKeeperTheme {
-                Greeting()
+                NavigationRoot(
+                    modifier = Modifier
+                        .fillMaxSize()
+                )
+                //Greeting()
             }
         }
     }
 }
 
-@Composable
-fun Greeting(
-    viewModel: MainActivityViewModel = koinViewModel()
-) {
-    val message by viewModel.text.collectAsStateWithLifecycle()
-    Box(
-        modifier = Modifier
-            .fillMaxSize(),
-    ){
-        Text(
-            text = message,
-            modifier = Modifier.align(Alignment.Center)
-        )
-    }
-}
+//@Composable
+//fun Greeting(
+//    viewModel: MainActivityViewModel = koinViewModel()
+//) {
+//    val message by viewModel.text.collectAsStateWithLifecycle()
+//    Box(
+//        modifier = Modifier
+//            .fillMaxSize(),
+//    ){
+//        Text(
+//            text = message,
+//            modifier = Modifier.align(Alignment.Center)
+//        )
+//    }
+//}

@@ -10,6 +10,11 @@ class AuthInterceptor(
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
 
+        val path = originalRequest.url.encodedPath
+        if (path.contains("/auth/login") || path.contains("/auth/register") || path.contains("/auth/refresh")) {
+            return chain.proceed(originalRequest)
+        }
+
         val token = runBlocking { tokenStorage.getAccessToken() }
 
         if (token == null) {

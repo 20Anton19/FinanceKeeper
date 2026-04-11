@@ -1,5 +1,7 @@
 package com.example.financekeeper.auth.di
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.example.financekeeper.Constants.BASE_URL
 import com.example.financekeeper.auth.domain.AuthRepo
 import com.example.financekeeper.auth.presentation.AuthViewModel
@@ -16,7 +18,12 @@ import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+import com.google.gson.*
+import com.google.gson.reflect.TypeToken
+import java.lang.reflect.Type
+import java.time.LocalDate
 
+@RequiresApi(Build.VERSION_CODES.O)
 val networkModule = module {
     single { TokenStorage(androidContext()) }
 
@@ -39,10 +46,21 @@ val networkModule = module {
     }
 
     single {
+        val gson = GsonBuilder()
+            .registerTypeAdapter(LocalDate::class.java, object : JsonDeserializer<LocalDate> {
+                override fun deserialize(json: JsonElement, type: Type, ctx: JsonDeserializationContext) =
+                    LocalDate.parse(json.asString)
+            })
+            .registerTypeAdapter(LocalDate::class.java, object : JsonSerializer<LocalDate> {
+                override fun serialize(src: LocalDate, type: Type, ctx: JsonSerializationContext) =
+                    JsonPrimitive(src.toString())
+            })
+            .create()
+
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(get())
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
     }
 
